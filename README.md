@@ -12,7 +12,7 @@ version: '3'
 services:
   nodejs:
     container_name: nodejs
-    network_mode: internal
+    # network_mode: internal
     build:
       context: https://github.com/dogefreak/downdetector-api-docker.git
       dockerfile: Dockerfile
