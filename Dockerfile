@@ -7,13 +7,16 @@ RUN apt-get update && apt-get install -y git
 RUN git clone https://github.com/dogefreak/downdetector-api-docker.git .
 
 # Navigate to the directory containing the script
-WORKDIR /app
+WORKDIR /app/test
 
 # Copy package.json and package-lock.json
 COPY package.json package-lock.json ./
 
 # Install npm packages
 RUN npm install
+
+# Navigate to the directory containing the script
+WORKDIR /app
 
 # Move the index.js file from the cloned repository to downdetector-api module
 RUN mv index.js node_modules/downdetector-api/index.js
