@@ -16,17 +16,18 @@ async function fetchData(service) {
   }
 }
 
-// Call the fetchData function for each service initially and then every hour (3600000 milliseconds)
+// Call the fetchData function for each service initially and then every hour (3600 seconds)
 async function fetchAllData(services) {
   for (const service of services) {
     await fetchData(service);
   }
 }
 
-const INTERVAL = process.env.FETCH_INTERVAL || 3600000; // Fetch interval in milliseconds, default to 1 hour if not provided
+const INTERVAL_SECONDS = process.env.FETCH_INTERVAL_SECONDS || 3600; // Fetch interval in seconds, default to 1 hour if not provided
+const INTERVAL_MILLISECONDS = INTERVAL_SECONDS * 1000; // Convert seconds to milliseconds
 
 fetchAllData(process.env.MEASURE_SERVICE.split(',')); // Fetch data for all services listed in the environment variable initially
-setInterval(() => fetchAllData(process.env.MEASURE_SERVICE.split(',')), INTERVAL); // Fetch data for all services listed in the environment variable based on the interval
+setInterval(() => fetchAllData(process.env.MEASURE_SERVICE.split(',')), INTERVAL_MILLISECONDS); // Fetch data for all services listed in the environment variable based on the interval
 
 // Route for /metrics endpoint
 app.get('/metrics', (req, res) => {
