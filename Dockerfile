@@ -1,13 +1,13 @@
 FROM node:latest
 
+# Navigate to the directory containing the script
+WORKDIR /app
+
 # Install system dependencies
 RUN apt-get update && apt-get install -y git
 
 # Clone the repository containing the script
 RUN git clone https://github.com/dogefreak/downdetector-api-docker.git .
-
-# Navigate to the directory containing the script
-WORKDIR /app
 
 # Copy package.json and package-lock.json
 COPY package.json package-lock.json ./
