@@ -42,12 +42,23 @@ RUN apt-get update && apt-get install -y \
     wget \
     && rm -rf /var/lib/apt/lists/*
 
-WORKDIR /app
-
 # Clone the repository containing the script
 RUN git clone https://github.com/dogefreak/downdetector-api-docker.git .
 
 # Navigate to the directory containing the script
+WORKDIR /app
+
+# Customize the index.js file
+RUN curl https://raw.githubusercontent.com/dogefreak/downdetector-api-docker/master/index.js > node_modules/downdetector-api/index.js
+
+# Navigate to the directory containing the script
 WORKDIR /app/test
 
-# Copy package.
+# Copy package.json and package-lock.json
+COPY package.json package-lock.json ./
+
+# Install npm packages
+RUN npm install
+
+# Command to start the application
+CMD ["node", "prometheus.js"]
