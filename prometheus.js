@@ -22,8 +22,11 @@ async function fetchAllData(services) {
     await fetchData(service);
   }
 }
+
+const INTERVAL = process.env.FETCH_INTERVAL || 3600000; // Fetch interval in milliseconds, default to 1 hour if not provided
+
 fetchAllData(process.env.MEASURE_SERVICE.split(',')); // Fetch data for all services listed in the environment variable initially
-setInterval(() => fetchAllData(process.env.MEASURE_SERVICE.split(',')), 3600000); // Fetch data for all services listed in the environment variable every hour
+setInterval(() => fetchAllData(process.env.MEASURE_SERVICE.split(',')), INTERVAL); // Fetch data for all services listed in the environment variable based on the interval
 
 // Route for /metrics endpoint
 app.get('/metrics', (req, res) => {
