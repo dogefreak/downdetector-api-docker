@@ -58,7 +58,7 @@ COPY package.json package-lock.json ./
 RUN npm install
 
 # Move the index.js file from the cloned repository to downdetector-api module
-RUN mv index.js node_modules/downdetector-api/index.js
+# RUN mv index.js node_modules/downdetector-api/index.js
 
 # Copy the prometheus.js file to the root directory
 COPY prometheus.js .
