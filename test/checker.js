@@ -1,3 +1,5 @@
+// Script to check if downdetector-api packages was properly installed.
+  
 const { downdetector } = require('downdetector-api');
 
 async function main () {
