@@ -33,18 +33,19 @@ setInterval(() => fetchAllData(process.env.MEASURE_SERVICE.split(',')), INTERVAL
 app.get('/metrics', (req, res) => {
   let metrics = '';
   for (const service in data) {
-    metrics += `
-      # HELP ${service}_outages Number of outages reported for ${service}
-      # TYPE ${service}_outages gauge
-      ${data[service].reports.map(report => `${service}_outages{date="${report.date}", value="${report.value}"} ${report.value}`).join('\n')}
-    `;
+    metrics += `# HELP ${service}_reports Number of reports for ${service}\n`;
+    metrics += `# TYPE ${service}_reports gauge\n`;
+    metrics += data[service].reports.map(report => `${service}_reports{date="${report.date}", value="${report.value}"} ${report.value}`).join('\n');
+    metrics += '\n';
   }
   res.set('Content-Type', 'text/plain');
   res.send(metrics);
 });
 
-// Disable the root page by not defining any route handler for "/"
-// Express will return a 404 Not Found for any request to the root URL
+// Catch-all route to redirect all requests to /metrics endpoint
+app.use((req, res) => {
+  res.redirect('/metrics');
+});
 
 // Start the Express.js server
 const PORT = process.env.PORT || 3333;
