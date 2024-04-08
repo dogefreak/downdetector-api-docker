@@ -10,14 +10,16 @@ Not tested on other systems - only Debian 12 with Portainer!
 version: '3'
 
 services:
-  node_app:
+  nodejs:
+    container_name: nodejs
+    network_mode: internal
     build:
       context: https://github.com/dogefreak/downdetector-api-docker.git
       dockerfile: Dockerfile
     environment:
       - PORT=3333
       - MEASURE_SERVICE=ziggo,google
-      - INTERVAL= 3600 # measurement interval in seconds 
+      - INTERVAL=3600 # measurement interval in seconds 
     ports:
       - "3333:3333"
 ```
