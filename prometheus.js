@@ -31,18 +31,17 @@ setInterval(() => fetchAllData(process.env.MEASURE_SERVICE.split(',')), INTERVAL
 
 // Route for /metrics endpoint
 app.get('/metrics', (req, res) => {
-  let metrics = '';
   const services = Object.keys(data);
-
-  services.forEach((service, index) => {
-    metrics += `# HELP ${service}_reports Number of reports for ${service}\n`;
-    metrics += `# TYPE ${service}_reports gauge\n`;
-    metrics += data[service].reports.map(report => `${service}_reports{date="${report.date}", value="${report.value}"} ${report.value}`).join('\n');
-    
+  const metrics = services.map((service, index) => {
+    let metricsString = '';
+    metricsString += `# HELP ${service}_reports Number of reports for ${service}\n`;
+    metricsString += `# TYPE ${service}_reports gauge\n`;
+    metricsString += data[service].reports.map(report => `${service}_reports{date="${report.date}", value="${report.value}"} ${report.value}`).join('\n');
     if (index !== services.length - 1) {
-      metrics += '\n'; // Add a blank line if it's not the last service
+      metricsString += '\n'; // Add a blank line if it's not the last service
     }
-  });
+    return metricsString;
+  }).join('\n');
 
   res.set('Content-Type', 'text/plain');
   res.send(metrics);
