@@ -58,7 +58,7 @@ COPY package.json package-lock.json ./
 RUN npm install
 
 # Customize the index.js file
-RUN curl https://raw.githubusercontent.com/dogefreak/downdetector-api-docker/master/index.js > node_modules/downdetector-api/index.js
+# RUN curl https://raw.githubusercontent.com/dogefreak/downdetector-api-docker/master/index.js > node_modules/downdetector-api/index.js
 
 # Command to start the application
 CMD ["node", "prometheus.js"]
