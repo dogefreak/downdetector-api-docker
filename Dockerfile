@@ -1,8 +1,5 @@
 FROM node:latest
 
-# Set path
-WORKDIR /app
-
 # Install system dependencies
 RUN apt-get update && apt-get install -y git
 
