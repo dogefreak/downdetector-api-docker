@@ -1,5 +1,8 @@
 FROM node:latest
 
+# Navigate to the directory containing the script
+WORKDIR /app
+
 # Install system dependencies
 RUN apt-get update && apt-get install -y git
 
