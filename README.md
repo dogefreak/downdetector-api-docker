@@ -18,8 +18,9 @@ services:
       dockerfile: Dockerfile
     environment:
       - PORT=3333
+      - COUNTRY=nl
       - MEASURE_SERVICE=ziggo,google
-      - INTERVAL=3600 # measurement interval in seconds 
+      - INTERVAL=900 # measurement interval in seconds 
     ports:
       - "3333:3333"
 ```
