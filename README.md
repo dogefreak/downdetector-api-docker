@@ -4,7 +4,7 @@ Uses Unofficial APIs for Downdetector.com website - special thanks to [Davide Vi
 
 It might not work sometimes (expecially .com domain) due to the website being protected by Cloudflare.
 
-### Install
+### Installation with Docker Compose
 Not tested on other systems - only Debian 12 with Portainer!
 ```yml
 version: '3'
@@ -24,12 +24,26 @@ services:
     ports:
       - "3333:3333"
 ```
-
-### Example
+### Metrics page example
 ```
+# HELP ziggo_reports Number of reports for ziggo
+# TYPE ziggo_reports gauge
+ziggo_reports{date="2024-04-08T09:06:01+00:00", value="102"} 102
+
+# HELP google_reports Number of reports for google
+# TYPE google_reports gauge
+google_reports{date="2024-04-08T09:06:45+00:00", value="3"} 3
+```
+
+### Prometheus Scrape Job
+```yml
+  - job_name: 'downdetector'
+    scrape_interval: 900s
+    static_configs:
+    - targets:
+      - nodejs:3333
+```
+
+### Grafana Dashboard
 T.b.d.
-```
-
-### Available inputs
-- All the companies for which Downdetector has a page. 
 
