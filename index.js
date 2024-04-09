@@ -54,12 +54,24 @@ function getChartPointsString(scriptContent) {
  * @return {Object} object with reports and baseline properties
  */
 function getChartPointsObject(chartPoints) {
-  const latestData = chartPoints.pop(); // Extracting the latest data point
-  const { date, value } = latestData.replace(/[\{\}']/g, '').split(',').map(pair => pair.split(':').pop().trim());
   return {
-    reports: [{ date, value: +value }], // Convert the extracted data to object format
-    baseline: [] // Since we're only fetching the latest data, baseline data is empty
+    reports: str2obj(chartPoints.slice(0, 96)),
+    baseline: str2obj(chartPoints.slice(96, 192)),
   };
+}
+
+/**
+ * Convert a string to object with date and value properties
+ * @param {String} chartPoints string to convert to object
+ * @return {Object} object with date and value properties
+ */
+function str2obj(chartPoints) {
+  return chartPoints
+      .map((line) => line
+          .replace(/\{ | \},|'/g, '')
+          .split('x: ').pop()
+          .split(', y: '))
+      .map((tuple) => ({ date: tuple[0], value: +tuple[1] }));
 }
 
 /**
