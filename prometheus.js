@@ -23,7 +23,7 @@ async function fetchAllData(services) {
   }
 }
 
-const INTERVAL_SECONDS = process.env.FETCH_INTERVAL_SECONDS || 3600; // Fetch interval in seconds, default to 1 hour if not provided
+const INTERVAL_SECONDS = process.env.INTERVAL || 3600; // Fetch interval in seconds, default to 1 hour if not provided
 const INTERVAL_MILLISECONDS = INTERVAL_SECONDS * 1000; // Convert seconds to milliseconds
 
 fetchAllData(process.env.MEASURE_SERVICE.split(',')); // Fetch data for all services listed in the environment variable initially
