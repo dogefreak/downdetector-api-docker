@@ -36,6 +36,7 @@ google_reports{date="2024-04-08T09:06:45+00:00", value="3"} 3
 ```
 
 ### Prometheus Scrape Job
+Make sure that the measurement interval and the Prometheus scrape interval are the same!
 ```yml
   - job_name: 'downdetector'
     scrape_interval: 900s
