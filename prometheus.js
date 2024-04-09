@@ -9,10 +9,11 @@ let data = {}; // Variable to hold the fetched data
 async function fetchData(service, country) {
   try {
     const response = await downdetector(service, country);
-    data[service] = response; // Update data variable with the fetched response for the specific service
-    console.log(`Data fetched successfully for ${service}.`);
+    // Update data variable with the latest entry for the specific service
+    data[service] = response.reports.length ? response.reports[0] : null;
+    console.log(`[${new Date().toISOString()}] Data fetched successfully for ${service}.`);
   } catch (err) {
-    console.error(`Error fetching data for ${service}:`, err);
+    console.error(`[${new Date().toISOString()}] Error fetching data for ${service}:`, err);
   }
 }
 
@@ -23,7 +24,7 @@ async function fetchAllData(services, country) {
   }
 }
 
-const INTERVAL_SECONDS = process.env.FETCH_INTERVAL_SECONDS || 900; // Fetch interval in seconds, default to 1 hour if not provided
+const INTERVAL_SECONDS = process.env.FETCH_INTERVAL_SECONDS || 3600; // Fetch interval in seconds, default to 1 hour if not provided
 const INTERVAL_MILLISECONDS = INTERVAL_SECONDS * 1000; // Convert seconds to milliseconds
 
 const COUNTRY = process.env.COUNTRY || 'nl'; // Default country is the Netherlands (nl)
@@ -33,18 +34,15 @@ setInterval(() => fetchAllData(process.env.MEASURE_SERVICE.split(','), COUNTRY),
 
 // Route for /metrics endpoint
 app.get('/metrics', (req, res) => {
-  const services = Object.keys(data);
-  const metrics = services.map((service, index) => {
-    let metricsString = '';
-    metricsString += `# HELP ${service}_reports Number of reports for ${service}\n`;
-    metricsString += `# TYPE ${service}_reports gauge\n`;
-    metricsString += data[service].reports.map(report => `${service}_reports{date="${report.date}", value="${report.value}"} ${report.value}`).join('\n');
-    if (index !== services.length - 1) {
-      metricsString += '\n'; // Add a blank line if it's not the last service
+  let metrics = '';
+  for (const service in data) {
+    if (data[service]) {
+      metrics += `# HELP ${service}_reports Number of reports for ${service}\n`;
+      metrics += `# TYPE ${service}_reports gauge\n`;
+      metrics += `${service}_reports{date="${data[service].date}", value="${data[service].value}"} ${data[service].value}\n`;
+      metrics += '\n'; // Add a blank line after each service's metrics
     }
-    return metricsString;
-  }).join('\n');
-
+  }
   res.set('Content-Type', 'text/plain');
   res.send(metrics);
 });
@@ -57,5 +55,5 @@ app.use((req, res) => {
 // Start the Express.js server
 const PORT = process.env.PORT || 3333;
 app.listen(PORT, () => {
-  console.log(`Server is running on port ${PORT}`);
+  console.log(`[${new Date().toISOString()}] Server is running on port ${PORT}`);
 });
