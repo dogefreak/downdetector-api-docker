@@ -5,10 +5,10 @@ const app = express();
 
 let data = {}; // Variable to hold the fetched data
 
-// Function to fetch data from your script for a given service
-async function fetchData(service) {
+// Function to fetch data from your script for a given service and country
+async function fetchData(service, country) {
   try {
-    const response = await downdetector(service, 'nl');
+    const response = await downdetector(service, country);
     data[service] = response; // Update data variable with the fetched response for the specific service
     console.log(`Data fetched successfully for ${service}.`);
   } catch (err) {
@@ -17,17 +17,19 @@ async function fetchData(service) {
 }
 
 // Call the fetchData function for each service initially and then every hour (3600 seconds)
-async function fetchAllData(services) {
+async function fetchAllData(services, country) {
   for (const service of services) {
-    await fetchData(service);
+    await fetchData(service, country);
   }
 }
 
-const INTERVAL_SECONDS = process.env.INTERVAL || 3600; // Fetch interval in seconds, default to 1 hour if not provided
+const INTERVAL_SECONDS = process.env.FETCH_INTERVAL_SECONDS || 3600; // Fetch interval in seconds, default to 1 hour if not provided
 const INTERVAL_MILLISECONDS = INTERVAL_SECONDS * 1000; // Convert seconds to milliseconds
 
-fetchAllData(process.env.MEASURE_SERVICE.split(',')); // Fetch data for all services listed in the environment variable initially
-setInterval(() => fetchAllData(process.env.MEASURE_SERVICE.split(',')), INTERVAL_MILLISECONDS); // Fetch data for all services listed in the environment variable based on the interval
+const COUNTRY = process.env.COUNTRY || 'nl'; // Default country is the Netherlands (nl)
+
+fetchAllData(process.env.MEASURE_SERVICE.split(','), COUNTRY); // Fetch data for all services listed in the environment variable initially
+setInterval(() => fetchAllData(process.env.MEASURE_SERVICE.split(','), COUNTRY), INTERVAL_MILLISECONDS); // Fetch data for all services listed in the environment variable based on the interval
 
 // Route for /metrics endpoint
 app.get('/metrics', (req, res) => {
