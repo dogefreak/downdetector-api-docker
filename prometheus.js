@@ -23,7 +23,7 @@ async function fetchAllData(services, country) {
   }
 }
 
-const INTERVAL_SECONDS = process.env.FETCH_INTERVAL_SECONDS || 3600; // Fetch interval in seconds, default to 1 hour if not provided
+const INTERVAL_SECONDS = process.env.FETCH_INTERVAL_SECONDS || 900; // Fetch interval in seconds, default to 1 hour if not provided
 const INTERVAL_MILLISECONDS = INTERVAL_SECONDS * 1000; // Convert seconds to milliseconds
 
 const COUNTRY = process.env.COUNTRY || 'nl'; // Default country is the Netherlands (nl)
