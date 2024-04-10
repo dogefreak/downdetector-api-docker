@@ -5,32 +5,34 @@ const app = express();
 
 let data = {}; // Variable to hold the fetched data
 
-// Function to fetch data from your script for a given service and country
-async function fetchData(service, country) {
-  try {
-    const response = await downdetector(service, country);
-    // Update data variable with the latest entry for the specific service
-    data[service] = response.reports.length ? response.reports[0] : null;
-    console.log(`[${new Date().toISOString()}] Data fetched successfully for ${service}.`);
-  } catch (err) {
-    console.error(`[${new Date().toISOString()}] Error fetching data for ${service}:`, err);
-  }
+// Function to format the date for logs
+function formatLogDate(date) {
+  return date.toLocaleString('en-US', { timeZone: 'Europe/Amsterdam' }); // Adjust timeZone as per your requirement
 }
 
-// Call the fetchData function for each service initially and then every hour (3600 seconds)
+// Function to fetch data for all services
 async function fetchAllData(services, country) {
-  for (const service of services) {
-    await fetchData(service, country);
+  try {
+    for (const service of services) {
+      const response = await downdetector(service, country);
+      // Update data variable with the latest entry for the specific service
+      data[service] = response.reports.length ? response.reports[0] : null;
+      console.log(`[${formatLogDate(new Date())}] Data fetched successfully for ${service}.`);
+    }
+  } catch (err) {
+    console.error(`[${formatLogDate(new Date())}] Error fetching data:`, err);
   }
 }
 
-const INTERVAL_SECONDS = process.env.FETCH_INTERVAL_SECONDS || 3600; // Fetch interval in seconds, default to 1 hour if not provided
-const INTERVAL_MILLISECONDS = INTERVAL_SECONDS * 1000; // Convert seconds to milliseconds
-
-const COUNTRY = process.env.COUNTRY || 'nl'; // Default country is the Netherlands (nl)
-
-fetchAllData(process.env.MEASURE_SERVICE.split(','), COUNTRY); // Fetch data for all services listed in the environment variable initially
-setInterval(() => fetchAllData(process.env.MEASURE_SERVICE.split(','), COUNTRY), INTERVAL_MILLISECONDS); // Fetch data for all services listed in the environment variable based on the interval
+// Function to get environment variables with defaults
+function getEnvVariables() {
+  return {
+    PORT: process.env.PORT || 3333,
+    FETCH_INTERVAL_SECONDS: process.env.INTERVAL|| 900,
+    MEASURE_SERVICE: process.env.MEASURE_SERVICE || 'github',
+    COUNTRY: process.env.COUNTRY || 'nl'
+  };
+}
 
 // Route for /metrics endpoint
 app.get('/metrics', (req, res) => {
@@ -39,7 +41,7 @@ app.get('/metrics', (req, res) => {
     if (data[service]) {
       metrics += `# HELP ${service}_reports Number of reports for ${service}\n`;
       metrics += `# TYPE ${service}_reports gauge\n`;
-      metrics += `${service}_reports{date="${data[service].date}", value="${data[service].value}"} ${data[service].value}\n`;
+      metrics += `${service}_reports ${data[service].value}\n`;
       metrics += '\n'; // Add a blank line after each service's metrics
     }
   }
@@ -53,7 +55,18 @@ app.use((req, res) => {
 });
 
 // Start the Express.js server
-const PORT = process.env.PORT || 3333;
+const { PORT, FETCH_INTERVAL_SECONDS, MEASURE_SERVICE, COUNTRY } = getEnvVariables();
 app.listen(PORT, () => {
-  console.log(`[${new Date().toISOString()}] Server is running on port ${PORT}`);
+  console.log(`[${formatLogDate(new Date())}] Server is running on port ${PORT}`);
+  console.log(`[${formatLogDate(new Date())}] Environment variables:`);
+  console.log(`Interval: ${FETCH_INTERVAL_SECONDS}`);
+  console.log(`Measure Services: ${MEASURE_SERVICE}`);
+  console.log(`Country: ${COUNTRY}`);
+  
+  // Fetch data initially
+  fetchAllData(MEASURE_SERVICE.split(','), COUNTRY);
+  
+  // Fetch data based on the interval
+  const INTERVAL_MILLISECONDS = FETCH_INTERVAL_SECONDS * 1000; // Convert seconds to milliseconds
+  setInterval(() => fetchAllData(MEASURE_SERVICE.split(','), COUNTRY), INTERVAL_MILLISECONDS);
 });
