@@ -57,10 +57,10 @@ app.use((req, res) => {
 // Start the Express.js server
 const { PORT, MEASURE_SERVICE, COUNTRY, INTERVAL_MILLISECONDS } = getEnvVariables();
 app.listen(PORT, () => {
-  console.log(`[${formatLogDate(new Date())}] Server is running on port: ${PORT}`);
-  console.log(`[${formatLogDate(new Date())}] Services being measured: ${MEASURE_SERVICE.join(', ')}`); // Joining array elements with ', '
-  console.log(`[${formatLogDate(new Date())}] Measurement interval: ${INTERVAL_MILLISECONDS / 1000} seconds`); // Convert milliseconds back to seconds
-  console.log(`[${formatLogDate(new Date())}] Downdetector website: ${COUNTRY}`);
+  console.log(`[${formatLogDate(new Date())}] Server is running on port: ${PORT}\n` +
+              `[${formatLogDate(new Date())}] Services being measured: ${MEASURE_SERVICE.join(', ')}\n` +
+              `[${formatLogDate(new Date())}] Measurement interval: ${INTERVAL_MILLISECONDS / 1000} seconds\n` +
+              `[${formatLogDate(new Date())}] Downdetector website: ${COUNTRY}`);
   
   // Fetch data initially
   fetchAllData(MEASURE_SERVICE, COUNTRY); // Using MEASURE_SERVICE directly
