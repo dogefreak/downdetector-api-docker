@@ -27,13 +27,10 @@ services:
 ```
 ### Metrics page example
 ```
-# HELP ziggo_reports Number of reports for ziggo
-# TYPE ziggo_reports gauge
-ziggo_reports 187
-
-# HELP google_reports Number of reports for google
-# TYPE google_reports gauge
-google_reports 0
+# HELP downdetector Number of reports for all Services
+# TYPE downdetector gauge
+downdetector{name="Ziggo"} 96
+downdetector{name="Google"} 0
 ```
 
 ### Prometheus Scrape Job
