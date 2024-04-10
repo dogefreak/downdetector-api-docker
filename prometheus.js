@@ -34,15 +34,13 @@ function getEnvVariables() {
   };
 }
 
-// Route for /metrics endpoint
 app.get('/metrics', (req, res) => {
   let metrics = '';
+  metrics += `# HELP downdetector Number of reports for all Services\n`;
+  metrics += `# TYPE downdetector gauge\n`;
   for (const service in data) {
     if (data[service]) {
-      metrics += `# HELP ${service}_reports Number of reports for ${service}\n`;
-      metrics += `# TYPE ${service}_reports gauge\n`;
-      metrics += `${service}_reports ${data[service].value}\n`;
-      metrics += '\n'; // Add a blank line after each service's metrics
+      metrics += `downdetector{name="${service.charAt(0).toUpperCase() + service.slice(1)}"} ${data[service].value}\n`;
     }
   }
   res.set('Content-Type', 'text/plain');
