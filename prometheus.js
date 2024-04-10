@@ -17,7 +17,7 @@ async function fetchAllData(services, country) {
       const response = await downdetector(service, country);
       // Update data variable with the latest entry for the specific service
       data[service] = response.reports.length ? response.reports[0] : null;
-      console.log(`[${formatLogDate(new Date())}] Data fetched successfully for ${service}.`);
+      console.log(`[${formatLogDate(new Date())}] Data fetched successfully: ${service}`);
     }
   } catch (err) {
     console.error(`[${formatLogDate(new Date())}] Error fetching data:`, err);
