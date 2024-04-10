@@ -58,9 +58,9 @@ app.use((req, res) => {
 const { PORT, MEASURE_SERVICE, COUNTRY, INTERVAL_MILLISECONDS } = getEnvVariables();
 app.listen(PORT, () => {
   console.log(`[${formatLogDate(new Date())}] Server is running on port: ${PORT}\n` +
+              `[${formatLogDate(new Date())}] Downdetector website: ${COUNTRY}\n` +
               `[${formatLogDate(new Date())}] Services being measured: ${MEASURE_SERVICE.join(', ')}\n` +
-              `[${formatLogDate(new Date())}] Measurement interval: ${INTERVAL_MILLISECONDS / 1000} seconds\n` +
-              `[${formatLogDate(new Date())}] Downdetector website: ${COUNTRY}`);
+              `[${formatLogDate(new Date())}] Measurement interval: ${INTERVAL_MILLISECONDS / 1000} seconds`);
   
   // Fetch data initially
   fetchAllData(MEASURE_SERVICE, COUNTRY);
