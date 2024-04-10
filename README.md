@@ -5,13 +5,14 @@ Uses Unofficial APIs for Downdetector.com website - special thanks to [Davide Vi
 It might not work sometimes (expecially .com domain) due to the website being protected by Cloudflare.
 
 ### Installation with Docker Compose
-Not tested on other systems - only Debian 12 with Portainer!
+Not tested on other systems - only Debian 12 with Portainer.
 ```yml
 version: '3'
 
 services:
   nodejs:
     container_name: nodejs
+    restart: unless-stopped
     # network_mode: internal
     build:
       context: https://github.com/dogefreak/downdetector-api-docker.git
