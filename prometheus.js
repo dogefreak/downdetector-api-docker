@@ -28,7 +28,7 @@ async function fetchAllData(services, country) {
 function getEnvVariables() {
   return {
     PORT: process.env.PORT || 3333,
-    MEASURE_SERVICE: (process.env.MEASURE_SERVICE || 'github').split(','), // Splitting MEASURE_SERVICE here
+    MEASURE_SERVICE: (process.env.MEASURE_SERVICE || 'github').split(','),
     COUNTRY: process.env.COUNTRY || 'nl',
     INTERVAL_MILLISECONDS: (process.env.INTERVAL || 900) * 1000 // Convert seconds to milliseconds
   };
@@ -63,8 +63,8 @@ app.listen(PORT, () => {
               `[${formatLogDate(new Date())}] Downdetector website: ${COUNTRY}`);
   
   // Fetch data initially
-  fetchAllData(MEASURE_SERVICE, COUNTRY); // Using MEASURE_SERVICE directly
+  fetchAllData(MEASURE_SERVICE, COUNTRY);
   
   // Fetch data based on the interval
-  setInterval(() => fetchAllData(MEASURE_SERVICE, COUNTRY), INTERVAL_MILLISECONDS); // Using MEASURE_SERVICE directly
+  setInterval(() => fetchAllData(MEASURE_SERVICE, COUNTRY), INTERVAL_MILLISECONDS);
 });
