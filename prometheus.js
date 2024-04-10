@@ -7,7 +7,7 @@ let data = {}; // Variable to hold the fetched data
 
 // Function to format the date for logs
 function formatLogDate(date) {
-  return date.toLocaleString('en-US', { timeZone: 'Europe/Amsterdam' }); // Adjust timeZone as per your requirement
+  return date.toLocaleString('nl-NL', { timeZone: 'Europe/Amsterdam' }); // Adjust timeZone as per your requirement
 }
 
 // Function to fetch data for all services
@@ -28,9 +28,9 @@ async function fetchAllData(services, country) {
 function getEnvVariables() {
   return {
     PORT: process.env.PORT || 3333,
-    FETCH_INTERVAL_SECONDS: process.env.INTERVAL|| 900,
-    MEASURE_SERVICE: process.env.MEASURE_SERVICE || 'github',
-    COUNTRY: process.env.COUNTRY || 'nl'
+    MEASURE_SERVICE: (process.env.MEASURE_SERVICE || 'github').split(','), // Splitting MEASURE_SERVICE here
+    COUNTRY: process.env.COUNTRY || 'nl',
+    INTERVAL_MILLISECONDS: (process.env.INTERVAL || 900) * 1000 // Convert seconds to milliseconds
   };
 }
 
@@ -55,18 +55,16 @@ app.use((req, res) => {
 });
 
 // Start the Express.js server
-const { PORT, FETCH_INTERVAL_SECONDS, MEASURE_SERVICE, COUNTRY } = getEnvVariables();
+const { PORT, MEASURE_SERVICE, COUNTRY, INTERVAL_MILLISECONDS } = getEnvVariables();
 app.listen(PORT, () => {
   console.log(`[${formatLogDate(new Date())}] Server is running on port ${PORT}`);
-  console.log(`[${formatLogDate(new Date())}] Environment variables:`);
-  console.log(`Interval: ${FETCH_INTERVAL_SECONDS}`);
-  console.log(`Measure Services: ${MEASURE_SERVICE}`);
-  console.log(`Country: ${COUNTRY}`);
+  console.log(`[${formatLogDate(new Date())}] Services being measured: ${MEASURE_SERVICE.join(', ')}`); // Joining array elements with ', '
+  console.log(`[${formatLogDate(new Date())}] Measurement interval: ${INTERVAL_MILLISECONDS / 1000}`); // Convert milliseconds back to seconds
+  console.log(`[${formatLogDate(new Date())}] Downdetector website: ${COUNTRY}`);
   
   // Fetch data initially
-  fetchAllData(MEASURE_SERVICE.split(','), COUNTRY);
+  fetchAllData(MEASURE_SERVICE, COUNTRY); // Using MEASURE_SERVICE directly
   
   // Fetch data based on the interval
-  const INTERVAL_MILLISECONDS = FETCH_INTERVAL_SECONDS * 1000; // Convert seconds to milliseconds
-  setInterval(() => fetchAllData(MEASURE_SERVICE.split(','), COUNTRY), INTERVAL_MILLISECONDS);
+  setInterval(() => fetchAllData(MEASURE_SERVICE, COUNTRY), INTERVAL_MILLISECONDS); // Using MEASURE_SERVICE directly
 });
