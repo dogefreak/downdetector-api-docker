@@ -28,11 +28,11 @@ services:
 ```
 # HELP ziggo_reports Number of reports for ziggo
 # TYPE ziggo_reports gauge
-ziggo_reports{date="2024-04-08T09:06:01+00:00", value="102"} 102
+ziggo_reports 187
 
 # HELP google_reports Number of reports for google
 # TYPE google_reports gauge
-google_reports{date="2024-04-08T09:06:45+00:00", value="3"} 3
+google_reports 0
 ```
 
 ### Prometheus Scrape Job
