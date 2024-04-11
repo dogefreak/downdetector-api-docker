@@ -1,5 +1,6 @@
 const express = require('express');
 const { downdetector } = require('downdetector-api');
+const { exec } = require('child_process');
 
 const app = express();
 
@@ -22,11 +23,27 @@ async function fetchAllData(services, country) {
   } catch (err) {
     if (err.code === 'ENOTFOUND' || err instanceof TypeError) {
       console.error(`[${formatLogDate(new Date())}] Error fetching data:`, err.message);
-      console.log(`[${formatLogDate(new Date())}] Retrying data fetch in the next interval!`);
+      console.log(`[${formatLogDate(new Date())}] Retrying data fetch in the next interval.`);
+    } else if (err.message.includes('Failed to launch the browser process')) {
+      console.error(`[${formatLogDate(new Date())}] Error fetching data:`, err.message);
+      restartScript();
     } else {
       console.error(`[${formatLogDate(new Date())}] Unexpected error occurred:`, err);
+      restartScript();
     }
   }
+}
+
+// Function to restart the script
+function restartScript() {
+  console.log(`[${formatLogDate(new Date())}] Restarting the script...`);
+  exec('prometheus.js', (error, stdout, stderr) => {
+    if (error) {
+      console.error(`[${formatLogDate(new Date())}] Error restarting script:`, error);
+      return;
+    }
+    console.log(`[${formatLogDate(new Date())}] Script restarted successfully.`);
+  });
 }
 
 // Function to get environment variables with defaults
