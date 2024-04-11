@@ -49,14 +49,20 @@ function getChartPointsString(scriptContent) {
 }
 
 /**
- * Convert a string to object with reports and baseline properties
+ * Convert a string to object with reports and baseline properties, containing only the latest data point
  * @param {String} chartPoints string with dates and values
- * @return {Object} object with reports and baseline properties
+ * @return {Object} object with reports and baseline properties containing only the latest data point
  */
 function getChartPointsObject(chartPoints) {
+  const latestReportIndex = chartPoints.findIndex(line => line.includes('reports'));
+  const latestBaselineIndex = chartPoints.findIndex(line => line.includes('baseline'));
+  
+  const latestReport = latestReportIndex !== -1 ? str2obj(chartPoints.slice(latestReportIndex, latestReportIndex + 1)).pop() : null;
+  const latestBaseline = latestBaselineIndex !== -1 ? str2obj(chartPoints.slice(latestBaselineIndex, latestBaselineIndex + 1)).pop() : null;
+  
   return {
-    reports: str2obj(chartPoints.slice(0, 96)),
-    baseline: str2obj(chartPoints.slice(96, 192)),
+    reports: latestReport ? [latestReport] : [],
+    baseline: latestBaseline ? [latestBaseline] : [],
   };
 }
 
