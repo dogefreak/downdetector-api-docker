@@ -27,10 +27,14 @@ async function callDowndetector(company, domain) {
 function getScriptContent(data) {
   const $ = cheerio.load(data);
   const scriptElems = $('script[type="text/javascript"]');
-  let res = '';
+  let res = { reports: [], baseline: [] };
   for (const script of scriptElems) {
     if (script.children?.[0]?.data.includes('{ x:')) {
-      res = script.children[0]?.data; // 5th script on 06/2023
+      const scriptContent = script.children[0]?.data;
+      const chartPoints = getChartPointsString(scriptContent);
+      const { reports, baseline } = getChartPointsObject(chartPoints);
+      res.reports.push(reports[reports.length - 1]);
+      res.baseline.push(baseline[baseline.length - 1]);
       break;
     }
   }
@@ -49,20 +53,14 @@ function getChartPointsString(scriptContent) {
 }
 
 /**
- * Convert a string to object with reports and baseline properties, containing only the latest data point
+ * Convert a string to object with reports and baseline properties
  * @param {String} chartPoints string with dates and values
- * @return {Object} object with reports and baseline properties containing only the latest data point
+ * @return {Object} object with reports and baseline properties
  */
 function getChartPointsObject(chartPoints) {
-  const latestReportIndex = chartPoints.findIndex(line => line.includes('reports'));
-  const latestBaselineIndex = chartPoints.findIndex(line => line.includes('baseline'));
-  
-  const latestReport = latestReportIndex !== -1 ? str2obj(chartPoints.slice(latestReportIndex, latestReportIndex + 1)).pop() : null;
-  const latestBaseline = latestBaselineIndex !== -1 ? str2obj(chartPoints.slice(latestBaselineIndex, latestBaselineIndex + 1)).pop() : null;
-  
   return {
-    reports: latestReport ? [latestReport] : [],
-    baseline: latestBaseline ? [latestBaseline] : [],
+    reports: str2obj(chartPoints.slice(0, 96)),
+    baseline: str2obj(chartPoints.slice(96, 192)),
   };
 }
 
@@ -92,9 +90,7 @@ async function downdetector(company, domain = 'com') {
     }
     const data = await callDowndetector(company, domain);
     const scriptContent = getScriptContent(data);
-    const chartPoints = getChartPointsString(scriptContent);
-    const { reports, baseline } = getChartPointsObject(chartPoints);
-    return { reports, baseline };
+    return JSON.stringify(scriptContent); // Convert object to JSON string
   } catch (err) {
     console.error(err.message);
   }
