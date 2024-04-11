@@ -4,7 +4,8 @@ const { exec } = require('child_process');
 
 const app = express();
 
-let data = {}; // Variable to hold the fetched data
+let reports = {}; // Variable to hold the fetched reports data
+let baseline = {}; // Variable to hold the fetched baseline data
 
 // Function to format the date for logs
 function formatLogDate(date) {
@@ -16,8 +17,9 @@ async function fetchAllData(services, country) {
   try {
     for (const service of services) {
       const response = await downdetector(service, country);
-      // Update data variable with the latest entry for the specific service
-      data[service] = response.reports.length ? response.reports[0] : null;
+      // Update data variables with the latest entries for the specific service
+      reports[service] = response.reports.length ? response.reports[0] : null;
+      baseline[service] = response.baseline.length ? response.baseline[0] : null;
       console.log(`[${formatLogDate(new Date())}] Data fetched successfully: ${service}`);
     }
   } catch (err) {
@@ -58,11 +60,19 @@ function getEnvVariables() {
 
 app.get('/metrics', (req, res) => {
   let metrics = '';
-  metrics += `# HELP downdetector Number of reports for all Services\n`;
-  metrics += `# TYPE downdetector gauge\n`;
-  for (const service in data) {
-    if (data[service]) {
-      metrics += `downdetector{name="${service.charAt(0).toUpperCase() + service.slice(1)}"} ${data[service].value}\n`;
+  metrics += `# HELP downdetector_reports Number of reports for all Services\n`;
+  metrics += `# TYPE downdetector_reports gauge\n`;
+  for (const service in reports) {
+    if (reports[service]) {
+      metrics += `downdetector_reports{name="${service.charAt(0).toUpperCase() + service.slice(1)}"} ${reports[service].value}\n`;
+    }
+  }
+  metrics += '\n'; // Add a blank line before baseline metrics
+  metrics += `# HELP downdetector_baseline Baseline value for all Services\n`;
+  metrics += `# TYPE downdetector_baseline gauge\n`;
+  for (const service in baseline) {
+    if (baseline[service]) {
+      metrics += `downdetector_baseline{name="${service.charAt(0).toUpperCase() + service.slice(1)}"} ${baseline[service].value}\n`;
     }
   }
   res.set('Content-Type', 'text/plain');
