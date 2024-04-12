@@ -64,20 +64,23 @@ function getEnvVariables() {
 
 app.get('/metrics', (req, res) => {
   let metrics = '';
-  metrics += `# HELP downdetector Number of reports for all Services\n`;
+  metrics += `# HELP downdetector Number of Reports for all Services\n`;
   metrics += `# TYPE downdetector gauge\n`;
   for (const service in reports) {
     if (reports.hasOwnProperty(service)) {
       metrics += `downdetector{name="${service.charAt(0).toUpperCase() + service.slice(1)}"} ${reports[service]}\n`;
     }
   }
+  metrics += `\n`;
+  metrics += `# HELP downdetector_baseline Baseline for all Services\n`;
+  metrics += `# TYPE downdetector_baseline gauge\n`;
+  for (const service in baseline) {
+    if (baseline.hasOwnProperty(service)) {
+      metrics += `downdetector_baseline{name="${service.charAt(0).toUpperCase() + service.slice(1)}"} ${baseline[service]}\n`;
+    }
+  }
   res.set('Content-Type', 'text/plain');
   res.send(metrics);
-});
-
-// Catch-all route to redirect all requests to /metrics endpoint
-app.use((req, res) => {
-  res.redirect('/metrics');
 });
 
 // Start the Express.js server
