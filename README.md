@@ -27,10 +27,15 @@ services:
 ```
 ### Metrics page example
 ```
-# HELP downdetector Number of reports for all Services
+# HELP downdetector Number of Reports for all Services
 # TYPE downdetector gauge
-downdetector{name="Ziggo"} 96
-downdetector{name="Google"} 0
+downdetector{name="Ziggo"} 47
+downdetector{name="Google"} 1
+
+# HELP downdetector_baseline Baseline for all Services
+# TYPE downdetector_baseline gauge
+downdetector_baseline{name="Ziggo"} 44
+downdetector_baseline{name="Google"} 1
 ```
 
 ### Prometheus Scrape Job
