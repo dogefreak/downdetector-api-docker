@@ -19,7 +19,7 @@ async function fetchAllData(services, country) {
       const response = await downdetector(service, country);
       // Parse the JSON response
       const responseData = JSON.parse(response);
-      // Update the reports variable
+      // Update the arrays
       reports[service] = responseData.reports[0].value;
       baseline[service] = responseData.baseline[0].value;
       console.log(`[${formatLogDate(new Date())}] Data fetched successfully: ${service}`);
@@ -62,6 +62,7 @@ function getEnvVariables() {
   };
 }
 
+// Route for /metrics endpoint
 app.get('/metrics', (req, res) => {
   let metrics = '';
   metrics += `# HELP downdetector Number of Reports for all Services\n`;
