@@ -52,6 +52,9 @@ Make sure that the measurement interval and the Prometheus scrape interval are t
 Import this JSON data into your Grafana environment...
 <details>
   <summary><b>Dashboard</b></summary>
+  
+  Oh, Grafana...
+  
   ```json
   {
     "__inputs": [
@@ -588,5 +591,6 @@ Import this JSON data into your Grafana environment...
     "weekStart": ""
   }
   ```
+
 </details>
 
