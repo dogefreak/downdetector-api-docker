@@ -23,6 +23,8 @@ async function fetchAllData(services, country) {
       reports[service] = responseData.reports[0].value;
       baseline[service] = responseData.baseline[0].value;
       console.log(`[${formatLogDate(new Date())}] Data fetched successfully: ${service}`);
+      //console.log(`[${formatLogDate(new Date())}] ${service} reports:`, responseData.reports[0].value);
+      //console.log(`[${formatLogDate(new Date())}] ${service} baseline:`, responseData.baseline[0].value);
     }
   } catch (err) {
     if (err.code === 'ENOTFOUND' || err instanceof TypeError) {
@@ -65,8 +67,8 @@ app.get('/metrics', (req, res) => {
   metrics += `# HELP downdetector Number of reports for all Services\n`;
   metrics += `# TYPE downdetector gauge\n`;
   for (const service in reports) {
-    if (reports[service]) {
-      metrics += `downdetector{name="${service.charAt(0).toUpperCase() + service.slice(1)}"} ${reports[service].value}\n`;
+    if (reports.hasOwnProperty(service)) {
+      metrics += `downdetector{name="${service.charAt(0).toUpperCase() + service.slice(1)}"} ${reports[service]}\n`;
     }
   }
   res.set('Content-Type', 'text/plain');
