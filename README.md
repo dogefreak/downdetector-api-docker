@@ -50,6 +50,8 @@ Make sure that the measurement interval and the Prometheus scrape interval are t
 
 ### Grafana Dashboard
 Import this JSON data into your Grafana environment...
+<details>
+  <summary>Dashboard</summary>
 ```json
 {
   "__inputs": [
@@ -317,7 +319,7 @@ Import this JSON data into your Grafana environment...
           "refId": "B"
         }
       ],
-      "title": "DownDetector | Highest Reports (current)",
+      "title": "DownDetector | Reports (current)",
       "type": "stat"
     },
     {
@@ -390,7 +392,7 @@ Import this JSON data into your Grafana environment...
           "refId": "A"
         }
       ],
-      "title": "DownDetector | Highest Reports (current)",
+      "title": "DownDetector | Most Reports (current)",
       "type": "stat"
     },
     {
@@ -464,7 +466,7 @@ Import this JSON data into your Grafana environment...
           "refId": "A"
         }
       ],
-      "title": "DownDetector | Highest Reports (24h)",
+      "title": "DownDetector | Most Reports (24h)",
       "type": "stat"
     },
     {
@@ -540,7 +542,7 @@ Import this JSON data into your Grafana environment...
           "useBackend": false
         }
       ],
-      "title": "DownDetector | Highest Reports (24h)",
+      "title": "DownDetector | Peak Reports (24h)",
       "type": "stat"
     }
   ],
@@ -586,3 +588,5 @@ Import this JSON data into your Grafana environment...
   "weekStart": ""
 }
 ```
+</details>
+
