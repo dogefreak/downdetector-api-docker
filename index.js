@@ -9,19 +9,6 @@ const path = require('path');
  * @param {String} domain Domain suffix of downdetector website (eg: com)
  * @return {String} The page content
  */
-async function callDowndetector(company, domain) {
-  var url = (domain === "nl" || domain === "be") ? "allestoringen" : "downdetector";
-  const browser = await puppeteer.launch({ headless: true, args: ['--no-sandbox'] });
-  const page = await browser.newPage();
-  // eslint-disable-next-line max-len
-  await page.setUserAgent('Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/105.0.0.0 Safari/537.36');
-  await page.goto(`https://${url}.${domain}/status/${company}/`);
-  const content = await page.content();
-  await browser.close();
-  return content;
-}
-
-// New one to fix memory leak
 async function callDowndetectorNew(company, domain) {
   let stdoutData = '';
 
