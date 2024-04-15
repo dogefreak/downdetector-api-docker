@@ -19,6 +19,38 @@ async function callDowndetector(company, domain) {
   return content;
 }
 
+// New one to fix memory leak
+async function callDowndetectorNew(company, domain) {
+  let stdoutData = '';
+
+  return new Promise((resolve, reject) => {
+    const proc = spawn('node', [
+      path.resolve(__dirname, 'puWorker.js'),
+      `--company=${company}`,
+      `--domain=${domain}`,
+    ], { shell: false });
+
+    proc.stdout.on('data', (data) => {
+      stdoutData += data;
+    });
+
+    proc.stderr.on('data', (data) => {
+      console.error(`NodeERR: ${data}`);
+    });
+
+    proc.on('close', (code) => {
+      if (code !== 0) {
+        reject(new Error(`Child process exited with code ${code}`));
+      }
+    });
+
+    proc.on('exit', () => {
+      proc.kill();
+      resolve(stdoutData);
+    });
+  });
+}
+
 /**
  * Get the script tag content from the Downdetector page content
  * @param {String} data Page content
@@ -88,7 +120,7 @@ async function downdetector(company, domain = 'com') {
     if (!company || (typeof company) !== 'string') {
       throw Error('Invalid input');
     }
-    const data = await callDowndetector(company, domain);
+    const data = await callDowndetectorNew(company, domain);
     const scriptContent = getScriptContent(data);
     return JSON.stringify(scriptContent); // Convert object to JSON string
   } catch (err) {
