@@ -1,0 +1,26 @@
+import puppeteer from 'puppeteer'
+
+// WARNING: don't use console.log here for debug, use console.error instead. STDOUT is used to deliver output data
+
+// find value of input process argument with --input-data
+
+const inpDataB64 = process.argv.find((a) => a.startsWith('--input-data')).replace('--input-data', '')
+const inputData = JSON.parse(Buffer.from(inpDataB64, 'base64').toString())
+
+const browser = await puppeteer.launch({ args: ['--no-sandbox', '--disable-setuid-sandbox',] });
+const page = await browser.newPage();
+
+await page.goto(inputData.url, {waitUntil: 'networkidle2'});
+
+const buttonTitle = await page.evaluate(({ inputData }) => {
+  return document.querySelector(inputData.selectorToGet).innerText;
+}, { inputData });
+
+const outputData = {
+  buttonTitle: buttonTitle,
+}
+
+await page.close();
+await browser.close();
+
+console.log(JSON.stringify(outputData))  // print out data to STDOUT
