@@ -58,8 +58,11 @@ WORKDIR /app/downdetector-api-docker
 # Install npm packages
 RUN npm install
 
-# Move index.js to one of the installed npm packages
+# Move index.js to downdetector-api npm package
 RUN mv index.js /app/downdetector-api-docker/node_modules/downdetector-api/index.js
+
+# Move puWorker.js to downdetector-api npm package
+RUN mv puWorker.js /app/downdetector-api-docker/node_modules/downdetector-api/puWorker.js
 
 # Change directory to the installed npm package
 WORKDIR /app/downdetector-api-docker
