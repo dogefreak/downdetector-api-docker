@@ -1,26 +1,43 @@
-import puppeteer from 'puppeteer'
+// puWorker.js
+
+import puppeteer from 'puppeteer';
 
 // WARNING: don't use console.log here for debug, use console.error instead. STDOUT is used to deliver output data
 
-// find value of input process argument with --input-data
+// Get command line arguments for company and domain
+const companyArgIndex = process.argv.findIndex(arg => arg.startsWith('--company='));
+const domainArgIndex = process.argv.findIndex(arg => arg.startsWith('--domain='));
 
-const inpDataB64 = process.argv.find((a) => a.startsWith('--input-data')).replace('--input-data', '')
-const inputData = JSON.parse(Buffer.from(inpDataB64, 'base64').toString())
-
-const browser = await puppeteer.launch({ args: ['--no-sandbox', '--disable-setuid-sandbox',] });
-const page = await browser.newPage();
-
-await page.goto(inputData.url, {waitUntil: 'networkidle2'});
-
-const buttonTitle = await page.evaluate(({ inputData }) => {
-  return document.querySelector(inputData.selectorToGet).innerText;
-}, { inputData });
-
-const outputData = {
-  buttonTitle: buttonTitle,
+if (companyArgIndex === -1 || domainArgIndex === -1) {
+  console.error('Missing command line arguments.');
+  process.exit(1);
 }
 
-await page.close();
-await browser.close();
+const company = process.argv[companyArgIndex].split('=')[1];
+const domain = process.argv[domainArgIndex].split('=')[1];
 
-console.log(JSON.stringify(outputData))  // print out data to STDOUT
+async function runPuppeteer(company, domain) {
+  const browser = await puppeteer.launch({ args: ['--no-sandbox', '--disable-setuid-sandbox'] });
+  const page = await browser.newPage();
+
+  const url = (domain === 'nl' || domain === 'be') ? 'allestoringen' : 'downdetector';
+  const pageUrl = `https://${url}.${domain}/status/${company}/`;
+
+  await page.goto(pageUrl, { waitUntil: 'networkidle2' });
+
+  const content = await page.content();
+
+  await page.close();
+  await browser.close();
+
+  return content;
+}
+
+runPuppeteer(company, domain)
+  .then((content) => {
+    console.log(content); // Print out data to STDOUT
+  })
+  .catch((error) => {
+    console.error('Error during Puppeteer operation:', error);
+    process.exit(1);
+  });
