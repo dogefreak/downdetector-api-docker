@@ -1,3 +1,4 @@
+const puppeteer = require('puppeteer');
 // WARNING: don't use console.log here for debug, use console.error instead. STDOUT is used to deliver output data
 
 // Get command line arguments for company and domain
