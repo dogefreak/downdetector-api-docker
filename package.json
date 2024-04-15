@@ -3,6 +3,7 @@
   "version": "1.0.0",
   "description": "Unofficial APIs for downdetector.com",
   "main": "index.js",
+  "type": "module",
   "scripts": {
     "lint": "eslint ./",
     "test": "nyc mocha --timeout 5000 --exit",
