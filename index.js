@@ -1,5 +1,8 @@
 const cheerio = require('cheerio');
 const puppeteer = require('puppeteer');
+import { spawn } from 'child_process';
+import path from 'path';
+const __dirname = path.resolve();
 
 /**
  * Call Downdetector website and get the page content
