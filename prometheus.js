@@ -43,7 +43,7 @@ async function fetchAllData(services, country) {
 // Function to restart the script
 function restartScript() {
   console.log(`[${formatLogDate(new Date())}] Restarting the script...`);
-  exec('prometheus.js', (error, stdout, stderr) => {
+  exec('/app/downdetector-api-docker/prometheus.js', (error, stdout, stderr) => {
     if (error) {
       console.error(`[${formatLogDate(new Date())}] Error restarting script:`, error);
       return;
