@@ -2,7 +2,6 @@ const cheerio = require('cheerio');
 const puppeteer = require('puppeteer');
 const { spawn } = require('child_process');
 const path = require('path');
-const __dirname = path.resolve();
 
 /**
  * Call Downdetector website and get the page content
