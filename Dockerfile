@@ -9,8 +9,7 @@ RUN apt-get update && apt-get install -y \
     gconf-service \
     chromium-browser \
     libasound2 \
-    libatk1.0-0 \
-    libatk-bridge2.0-0 \
+    libatk2.0-0 \
     libc6 \
     libcairo2 \
     libcups2 \
