@@ -7,6 +7,7 @@ RUN apt-get update && apt-get install -y \
     vim \
     nano \
     gconf-service \
+    chromium-browser \
     libasound2 \
     libatk1.0-0 \
     libatk-bridge2.0-0 \
