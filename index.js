@@ -3,29 +3,33 @@ const puppeteer = require('puppeteer');
 const { spawn } = require('child_process');
 const path = require('path');
 
-let browser;
+let browserPromise;
 
 async function initBrowser() {
-  browser = await puppeteer.launch({ headless: true, args: ['--no-sandbox'] });
+  browserPromise = puppeteer.launch({ headless: true, args: ['--no-sandbox'] });
 }
 
-initBrowser();
+async function getBrowserInstance() {
+  if (!browserPromise) {
+    await initBrowser();
+  }
+  return await browserPromise;
+}
 
-/**
- * Call Downdetector website and get the page content
- * @param {String} company Company to get the data for
- * @param {String} domain Domain suffix of downdetector website (eg: com)
- * @return {String} The page content
- */
 async function callDowndetector(company, domain) {
-  var url = (domain === "nl" || domain === "be") ? "allestoringen" : "downdetector";
-  const page = await browser.newPage();
-  // eslint-disable-next-line max-len
-  await page.setUserAgent('Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/105.0.0.0 Safari/537.36');
-  await page.goto(`https://${url}.${domain}/status/${company}/`);
-  const content = await page.content();
-  await page.close();
-  return content;
+  try {
+    const browser = await getBrowserInstance();
+    const page = await browser.newPage();
+    await page.setUserAgent('Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/105.0.0.0 Safari/537.36');
+    const url = (domain === "nl" || domain === "be") ? "allestoringen" : "downdetector";
+    await page.goto(`https://${url}.${domain}/status/${company}/`);
+    const content = await page.content();
+    await page.close();
+    return content;
+  } catch (error) {
+    console.error('Error calling Downdetector:', error);
+    throw error;
+  }
 }
 
 /**
