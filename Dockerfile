@@ -8,7 +8,7 @@ RUN apt-get update && apt-get install -y \
     nano \
     gconf-service \
     libasound2 \
-    libatk2.0-0 \
+    libatk1.0-0 \
     libc6 \
     libcairo2 \
     libcups2 \
