@@ -2,7 +2,7 @@ const cheerio = require('cheerio');
 const puppeteer = require('puppeteer');
 const { spawn } = require('child_process');
 const path = require('path');
-const browser = await puppeteer.launch({ headless: true, args: ['--no-sandbox'] });
+const browser = puppeteer.launch({ headless: true, args: ['--no-sandbox'] });
 
 /**
  * Call Downdetector website and get the page content
