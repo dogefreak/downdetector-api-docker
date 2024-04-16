@@ -27,8 +27,8 @@ async function fetchAllData(services, country) {
       //console.log(`[${formatLogDate(new Date())}] ${service} reports:`, responseData.reports[0].value);
       //console.log(`[${formatLogDate(new Date())}] ${service} baseline:`, responseData.baseline[0].value);
       // Log global variables to check for memory leaks
-      console.log(`[${formatLogDate(new Date())}] Updated reports:`, reports);
-      console.log(`[${formatLogDate(new Date())}] Updated baseline:`, baseline);
+      //console.log(`[${formatLogDate(new Date())}] Updated reports:`, reports);
+      //console.log(`[${formatLogDate(new Date())}] Updated baseline:`, baseline);
     }
   } catch (err) {
     if (err.code === 'ENOTFOUND' || err instanceof TypeError) {
