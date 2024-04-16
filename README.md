@@ -12,7 +12,7 @@ version: '3'
 services:
   nodejs:
     container_name: nodejs
-    restart: unless-stopped
+    restart: on-failure:3
     # network_mode: internal
     build:
       context: https://github.com/dogefreak/downdetector-api-docker.git
