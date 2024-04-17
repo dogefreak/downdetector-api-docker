@@ -68,4 +68,4 @@ RUN mv puWorker.js /app/downdetector-api-docker/node_modules/downdetector-api/pu
 WORKDIR /app/downdetector-api-docker
 
 # Start prometheus.js
-CMD ["node", "--inspect-brk='172.17.0.1:9229'", "prometheus.js"]
+CMD ["node", "prometheus.js"]
